@@ -1,5 +1,6 @@
 FROM eclipse-temurin:17-jdk-alpine
 
+# Force rebuild - Railway fix
 WORKDIR /app
 COPY target/*.jar app.jar
 
