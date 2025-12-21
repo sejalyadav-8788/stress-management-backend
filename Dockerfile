@@ -1,18 +1,10 @@
-# ---------- Build stage ----------
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+FROM eclipse-temurin:17-jdk-alpine
+
 WORKDIR /app
+COPY target/*.jar app.jar
 
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Railway injects PORT — we must use it
+ENV PORT=8080
+EXPOSE ${PORT}
 
-COPY src ./src
-RUN mvn clean package -DskipTests
-
-# ---------- Run stage ----------
-FROM eclipse-temurin:17
-WORKDIR /app
-
-COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8080
-
-ENTRYPOINT ["java","-jar","app.jar"]
+CMD ["sh", "-c", "java -Dserver.port=$PORT -jar app.jar"]
